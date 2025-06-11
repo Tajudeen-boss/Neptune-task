@@ -30,13 +30,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Get matching service providers
-    let providers = await storage.getServiceProvidersByType(processedQuery.serviceType)
-    
+    // Get matching service providers (case-insensitive)
+    let providers = await storage.getServiceProvidersByType(processedQuery.serviceType.toLowerCase())
+    console.log("Providers found by type:", providers.map(p => p.name))
+
     // Filter by location if specified
     if (processedQuery.location && processedQuery.location !== "local area") {
       const locationProviders = await storage.getServiceProvidersByLocation(processedQuery.location)
       providers = providers.filter(p => locationProviders.some(lp => lp.id === p.id))
+    }
+
+    // 🔁 Fallback if no providers found (e.g., use broader category)
+    if (providers.length === 0 && processedQuery.serviceType.toLowerCase().includes("dishwasher")) {
+      providers = await storage.getServiceProvidersByType("appliance repair")
     }
 
     // Generate AI summary
@@ -45,10 +51,10 @@ export async function POST(request: NextRequest) {
       aiSummary = await generateAISummary(query, providers, processedQuery)
     } catch (error) {
       console.error("AI summary generation failed:", error)
-      const avgPrice = providers.length > 0 
+      const avgPrice = providers.length > 0
         ? providers.map(p => p.pricing).join(', ')
         : "varies"
-      aiSummary = `Found ${providers.length} service providers for ${processedQuery.serviceType} in ${processedQuery.location}. Services range from ${avgPrice} with various response times available.`
+      aiSummary = `Found ${providers.length} service providers for ${processedQuery.serviceType} in ${processedQuery.location}. Services range from ${avgPrice}.`
     }
 
     // Store search query
