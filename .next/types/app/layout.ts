@@ -1,4 +1,4 @@
-// File: /Users/dev.boss/Downloads/ServiceSorcerer 3/app/layout.tsx
+// File: /Users/dev.boss/Documents/Neptune-task/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,4 +1,4 @@
-// File: /Users/dev.boss/Downloads/ServiceSorcerer 3/app/api/search/route.ts
+// File: /Users/dev.boss/Documents/Neptune-task/app/api/search/route.ts
 import * as entry from '../../../../../app/api/search/route.js'
 import type { NextRequest } from 'next/server.js'
 
