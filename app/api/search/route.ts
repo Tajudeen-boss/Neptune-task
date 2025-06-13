@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
     // Process query with OpenAI
     let processedQuery: ProcessedQuery
     try {
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Get matching service providers (case-insensitive)
+    // Get matching service providers 
     let providers = await storage.getServiceProvidersByType(processedQuery.serviceType.toLowerCase())
     console.log("Providers found by type:", providers.map(p => p.name))
 
@@ -40,7 +39,6 @@ export async function POST(request: NextRequest) {
       providers = providers.filter(p => locationProviders.some(lp => lp.id === p.id))
     }
 
-    // 🔁 Fallback if no providers found (e.g., use broader category)
     if (providers.length === 0 && processedQuery.serviceType.toLowerCase().includes("dishwasher")) {
       providers = await storage.getServiceProvidersByType("appliance repair")
     }
